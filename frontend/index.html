@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tourism Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="dashboard-wrapper">
+        <header class="top-nav">
+            <div class="logo">✈️ Wanderlust <span>AI</span></div>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Left Panel: Inputs -->
+            <section class="input-panel glass-panel">
+                <h2>1. Enter Preferences</h2>
+                <form id="recommendationForm">
+                    <div class="form-group">
+                        <label for="month">Travel Month</label>
+                        <select id="month" required>
+                            <option value="" disabled selected>Select Month</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="days">Days of Travel: <span id="daysValue" style="color:var(--primary);font-weight:700;">5</span></label>
+                        <input type="range" id="days" min="2" max="14" value="5" oninput="document.getElementById('daysValue').textContent=this.value">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="climate">Preferred Climate</label>
+                        <select id="climate" required>
+                            <option value="" disabled selected>Select Climate</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experience">Experience</label>
+                        <select id="experience" required>
+                            <option value="" disabled selected>Select Experience</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="travel_type">Traveling With</label>
+                        <select id="travel_type" required>
+                            <option value="" disabled selected>Select Type</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        <span id="btnText">Search Destinations</span>
+                        <div class="spinner" id="spinner" style="display: none;"></div>
+                    </button>
+                    <div id="errorBox" class="error-msg hidden"></div>
+                </form>
+            </section>
+
+            <!-- Center/Right Panel: Results View Handler -->
+            <section class="result-panel">
+                
+                <!-- View 1: Empty State -->
+                <div id="emptyState" class="empty-state glass-panel">
+                    <h3>Fill out the form to find your perfect destinations!</h3>
+                </div>
+
+                <!-- View 2: Selection Grid (Top 4 options) -->
+                <div id="selectionView" class="hidden">
+                    <h2 style="margin-bottom: 20px;">2. Pick a Destination</h2>
+                    <div class="options-grid" id="optionsGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- View 3: Final Report -->
+                <div id="reportView" class="hidden glass-panel report-panel">
+                    <button id="backBtn" class="back-btn">← Back to Options</button>
+                    
+                    <div class="report-header">
+                        <h1 id="reportCityName">City</h1>
+                        <div class="expense-tag" id="reportExpense">₹0 - ₹0 / person</div>
+                    </div>
+                    
+                    <p id="reportDesc" class="city-desc"></p>
+                    
+                    <div class="report-highlights">
+                        <div class="highlight-box">
+                            <h4>Must Visit</h4>
+                            <p id="reportPlaces"></p>
+                        </div>
+                        <div class="highlight-box">
+                            <h4>Local Food</h4>
+                            <p id="reportFood"></p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="itinerary-box">
+                        <h3>Detailed Travel Report</h3>
+                        <ul id="reportItinerary" class="timeline"></ul>
+                    </div>
+                </div>
+
+            </section>
+        </main>
+    </div>
+    <script src="script.js?v=4"></script>
+</body>
+</html>
