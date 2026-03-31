@@ -3,76 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Tourism Planner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=6">
+    <title>Wanderlust — Your Fun Travel Buddy ✈️</title>
+    <meta name="description" content="Discover your perfect travel destination with AI-powered recommendations. Fun, fast, and personalized trip planning.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=80">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+    <!-- ====== Animated Background Particles ====== -->
     <div class="bg-gradient"></div>
-    <div class="dashboard-wrapper">
+    <div class="floating-emojis" id="floatingEmojis"></div>
+
+    <!-- ====== LOGIN / REGISTER SCREEN ====== -->
+    <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+            <div class="auth-brand">
+                <div class="auth-logo-icon">✈️</div>
+                <h1>Wanderlust</h1>
+                <p class="auth-tagline">Your personal travel buddy! 🌍🎒</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form glass-panel">
+                <h2>Welcome Back, Explorer! 👋</h2>
+                <div class="form-group">
+                    <label for="loginEmail">📧 Email</label>
+                    <input type="email" id="loginEmail" placeholder="wanderer@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">🔒 Password</label>
+                    <input type="password" id="loginPassword" placeholder="Your secret passphrase" required>
+                </div>
+                <button id="loginBtn" class="auth-btn" onclick="handleLogin()">
+                    <span id="loginBtnText">Let's Go! 🚀</span>
+                    <div class="spinner" id="loginSpinner" style="display: none;"></div>
+                </button>
+                <div id="loginError" class="error-msg hidden"></div>
+                <p class="auth-switch">New here? <a href="#" onclick="showRegister(); return false;">Create an account 🎉</a></p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="auth-form glass-panel hidden">
+                <h2>Join the Adventure! 🗺️</h2>
+                <div class="form-group">
+                    <label for="regName">🧳 Your Name</label>
+                    <input type="text" id="regName" placeholder="What should we call you?" required>
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">📧 Email</label>
+                    <input type="email" id="regEmail" placeholder="wanderer@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">🔒 Password</label>
+                    <input type="password" id="regPassword" placeholder="Min 4 characters" required>
+                </div>
+                <button id="regBtn" class="auth-btn" onclick="handleRegister()">
+                    <span id="regBtnText">Create Account 🎒</span>
+                    <div class="spinner" id="regSpinner" style="display: none;"></div>
+                </button>
+                <div id="regError" class="error-msg hidden"></div>
+                <p class="auth-switch">Already exploring? <a href="#" onclick="showLogin(); return false;">Log in here 🔑</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MAIN DASHBOARD (hidden until login) ====== -->
+    <div id="dashboardScreen" class="dashboard-wrapper hidden">
         <header class="top-nav">
-            <div class="logo">✈️ Wanderlust <span>AI</span></div>
+            <div class="logo">
+                <span class="logo-emoji">✈️</span>
+                Wanderlust
+            </div>
+            <div class="nav-right">
+                <div class="user-badge" id="userBadge">
+                    <span class="user-avatar" id="userAvatar">🧳</span>
+                    <span class="user-name" id="userName">Traveler</span>
+                </div>
+                <button class="logout-btn" id="logoutBtn" onclick="handleLogout()">
+                    Logout 👋
+                </button>
+            </div>
         </header>
+
+        <!-- Fun welcome banner -->
+        <div class="welcome-banner glass-panel" id="welcomeBanner">
+            <div class="welcome-text">
+                <h2 id="welcomeMsg">Hey there, Explorer! 🎉</h2>
+                <p>Ready to find your next dream destination? Let's plan something amazing!</p>
+            </div>
+            <div class="welcome-stats">
+                <div class="stat-pill">
+                    <span class="stat-icon">⚡</span>
+                    <span class="stat-label">Instant Results</span>
+                </div>
+                <div class="stat-pill">
+                    <span class="stat-icon">🗓️</span>
+                    <span class="stat-label">Full Itinerary</span>
+                </div>
+            </div>
+        </div>
 
         <main class="dashboard-grid">
             <!-- Left Panel: Inputs -->
             <section class="input-panel glass-panel">
-                <h2>1. Enter Preferences</h2>
+                <h2>🧭 Pick Your Vibe</h2>
                 <form id="recommendationForm">
                     <div class="form-group">
-                        <label for="month">Travel Month</label>
+                        <label for="month">🗓️ When are you going?</label>
                         <select id="month" required>
-                            <option value="" disabled selected>Select Month</option>
+                            <option value="" disabled selected>Pick a month...</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="days">Days of Travel: <span id="daysValue" style="color:var(--primary);font-weight:700;">5</span></label>
+                        <label for="days">⏱️ How many days? <span id="daysValue" class="days-badge">5</span></label>
                         <input type="range" id="days" min="2" max="14" value="5" oninput="document.getElementById('daysValue').textContent=this.value">
+                        <div class="range-labels">
+                            <span>2 days</span>
+                            <span>14 days</span>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="climate">Preferred Climate</label>
+                        <label for="climate">🌡️ Weather mood?</label>
                         <select id="climate" required>
-                            <option value="" disabled selected>Select Climate</option>
+                            <option value="" disabled selected>Pick a climate...</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="experience">Experience</label>
+                        <label for="experience">🎭 What kind of experience?</label>
                         <select id="experience" required>
-                            <option value="" disabled selected>Select Experience</option>
+                            <option value="" disabled selected>Pick an experience...</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="travel_type">Traveling With</label>
+                        <label for="travel_type">👥 Who's coming along?</label>
                         <select id="travel_type" required>
-                            <option value="" disabled selected>Select Type</option>
+                            <option value="" disabled selected>Pick your squad...</option>
                         </select>
                     </div>
 
                     <button type="submit" id="submitBtn">
-                        <span id="btnText">Search Destinations</span>
+                        <span id="btnText">🔍 Find My Destinations!</span>
                         <div class="spinner" id="spinner" style="display: none;"></div>
                     </button>
                     <div id="errorBox" class="error-msg hidden"></div>
                 </form>
             </section>
 
-            <!-- Center/Right Panel: Results View Handler -->
+            <!-- Center/Right Panel: Results -->
             <section class="result-panel">
                 
                 <!-- View 1: Empty State -->
                 <div id="emptyState" class="empty-state glass-panel">
-                    <h3>Fill out the form to find your perfect destinations!</h3>
+                    <div class="empty-content">
+                        <div class="empty-icon">🌎</div>
+                        <h3>Where to next?</h3>
+                        <p>Fill out the form and let our AI find your perfect getaway!</p>
+                    </div>
                 </div>
 
-                <!-- View 2: Selection Grid (Top 4 options) -->
-                <div id="selectionView" class="hidden">
-                    <h2 style="margin-bottom: 20px;">2. Pick a Destination</h2>
-                    <div class="options-grid" id="optionsGrid">
-                        <!-- Populated dynamically -->
+                <!-- View 2: Dashboard Charts -->
+                    <div id="selectionView" class="hidden glass-panel charts-container">
+                    <h2 class="section-title">🏆 Your Travel Matches</h2>
+                    <p class="charts-subtitle">Click on a slice in the Suitability pie chart to view the detailed plan!</p>
+                    
+                    <div class="charts-wrapper">
+                        <div class="chart-box">
+                            <h3>🎯 Suitability Match</h3>
+                            <canvas id="suitabilityChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h3>💸 Budget Comparison</h3>
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h3>🌡️ Climate Range (°C)</h3>
+                            <canvas id="climateChart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h3>🔍 City Vibe Spectrum (<span id="explorerCityName">Select a slice</span>)</h3>
+                            <canvas id="explorerChart"></canvas>
+                            <button id="viewIterBtn" class="auth-btn hidden" style="height: 38px; font-size: 0.9rem; padding: 6px 12px; margin-top: 15px;">View Full Itinerary ➔</button>
+                        </div>
                     </div>
                 </div>
 
@@ -81,19 +197,27 @@
                     <button id="backBtn" class="back-btn">← Back to Options</button>
                     
                     <div class="report-header">
-                        <h1 id="reportCityName">City</h1>
-                        <div class="expense-tag" id="reportExpense">₹0 - ₹0 / person</div>
+                        <div>
+                            <h1 id="reportCityName">City</h1>
+                            <div class="budget-rectangle">
+                                <h3>Budjet</h3>
+                                <div class="expense-tag" id="reportExpense">₹0 - ₹0 / person</div>
+                            </div>
+                        </div>
+                        <div class="budget-chart-container">
+                            <canvas id="cityBudgetChart"></canvas>
+                        </div>
                     </div>
                     
                     <p id="reportDesc" class="city-desc"></p>
                     
                     <div class="report-highlights">
                         <div class="highlight-box">
-                            <h4>Must Visit</h4>
+                            <h4>📍 Must Visit</h4>
                             <p id="reportPlaces"></p>
                         </div>
                         <div class="highlight-box">
-                            <h4>Local Food</h4>
+                            <h4>🍜 Local Food</h4>
                             <p id="reportFood"></p>
                         </div>
                     </div>
@@ -101,7 +225,7 @@
                     <hr>
 
                     <div class="itinerary-box">
-                        <h3>Detailed Travel Report</h3>
+                        <h3>📋 Your Travel Itinerary</h3>
                         <ul id="reportItinerary" class="timeline"></ul>
                     </div>
                 </div>
@@ -109,6 +233,7 @@
             </section>
         </main>
     </div>
-    <script src="script.js?v=4"></script>
+
+    <script src="script.js?v=50"></script>
 </body>
 </html>
